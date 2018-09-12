@@ -10,6 +10,7 @@ Popup dialogs provided by our interface.
   show_about - basic information about our application
   show_counts - listing of counts with bar graphs
   show_descriptor - presents descriptors for a relay
+  show_welcome - shows welcome dialog
 
   select_from_list - selects from a list of options
   select_sort_order - selects attributes by which to sort by
@@ -118,6 +119,22 @@ def show_about():
   with nyx.curses.CURSES_LOCK:
     nyx.curses.draw(_render, top = _top(), width = 80, height = 9)
     nyx.curses.key_input()
+
+
+def show_welcome():
+   """
+   Shows welcome dialog when nyx is run for the first time.
+   Can be turned off by setting shown in .nyxrc to true.
+   """
+   
+   def _render(subwindow):
+      subwindow.box()
+      subwindow.addstr(2, 1, 'Welcome to nyx')
+      subwindow.addstr(2, 2, 'Press any key to close dialog...')
+
+   with nyx.curses.CURSES_LOCK:
+      nyx.curses.draw(_render, top = _top())
+      nyx.curses.key_input()
 
 
 def show_counts(title, counts, fill_char = ' '):
@@ -250,7 +267,6 @@ def show_descriptor(fingerprint, color, is_close_key):
           nyx.curses.draw(_render, top = _top(), width = width, height = height)
       elif is_close_key(key):
         return key
-
 
 def _descriptor_text(fingerprint):
   """

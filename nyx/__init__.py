@@ -125,6 +125,7 @@ CONFIG = stem.util.conf.config_dict('nyx', {
   'show_torrc': True,
   'show_interpreter': True,
   'start_time': 0,
+  'shown_welcome': False,
 }, conf_handler)
 
 NYX_INTERFACE = None
@@ -189,8 +190,8 @@ def main():
 
     sys.exit(1)
 
-
-def draw_loop():
+@uses_settings
+def draw_loop(config):
   interface = nyx_interface()
   next_key = None  # use this as the next user input
 
@@ -206,6 +207,11 @@ def draw_loop():
   stem.util.log.info('nyx started (initialization took %0.1f seconds)' % (time.time() - CONFIG['start_time']))
 
   while not interface._quit:
+    # note: requires shown_welcome to be set as true in confile file, will always appear on start otherwise
+    if CONFIG['shown_welcome'] is False:
+      nyx.popups.show_welcome() 
+      config.set('shown_welcome', 'true')
+        
     if next_key:
       key, next_key = next_key, None
     else:
