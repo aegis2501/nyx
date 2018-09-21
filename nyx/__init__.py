@@ -125,8 +125,9 @@ CONFIG = stem.util.conf.config_dict('nyx', {
   'show_torrc': True,
   'show_interpreter': True,
   'start_time': 0,
-  'shown_welcome': False,
 }, conf_handler)
+
+RUNTIME_PREFERENCES = stem.util.conf.get_config('nyx_cache')
 
 NYX_INTERFACE = None
 TOR_CONTROLLER = None
@@ -173,6 +174,15 @@ except IOError as exc:
 
 
 def main():
+  runtime_preference_path = data_directory('runtime_cache')
+
+  if not os.path.exists(runtime_preference_path):
+    try:
+      open(runtime_preference_path, 'a+').close()
+      save_runtime_preference('show_welcome', 'true')
+    except OSError as exc:
+      stem.util.log.Error('Unable to create runtime_cache')
+
   try:
     nyx.starter.main()
   except ImportError as exc:
@@ -190,8 +200,7 @@ def main():
 
     sys.exit(1)
 
-@uses_settings
-def draw_loop(config):
+def draw_loop():
   interface = nyx_interface()
   next_key = None  # use this as the next user input
 
@@ -206,12 +215,12 @@ def draw_loop(config):
 
   stem.util.log.info('nyx started (initialization took %0.1f seconds)' % (time.time() - CONFIG['start_time']))
 
+  if runtime_preference('show_welcome', False):
+    nyx.popups.show_welcome() 
+    interface.redraw()
+    save_runtime_preference('show_welcome', 'false')
+
   while not interface._quit:
-    # note: requires shown_welcome to be set as true in confile file, will always appear on start otherwise
-    if CONFIG['shown_welcome'] is False:
-      nyx.popups.show_welcome() 
-      config.set('shown_welcome', 'true')
-        
     if next_key:
       key, next_key = next_key, None
     else:
@@ -330,6 +339,34 @@ def init_controller(*args, **kwargs):
   global TOR_CONTROLLER
   TOR_CONTROLLER = stem.connection.connect(*args, **kwargs)
   return TOR_CONTROLLER
+
+
+@uses_settings
+def runtime_preference(key, default_value, config):
+  """
+  Checks runtime preferences.
+  User specified options in nyxrc take precedence and will be returned if they exist
+  """
+
+  runtime_preference_path = data_directory('runtime_cache')
+  RUNTIME_PREFERENCES.load(runtime_preference_path)
+  
+  if key in config.keys():
+    #stem.util.log.notice("Config File Value: %s" %(config.get(key, default_value)))
+    return config.get(key, default_value)
+  else:
+    #stem.util.log.notice("Runtime Cache Value: %s" %(RUNTIME_PREFERENCES.get(key, default_value)))
+    return RUNTIME_PREFERENCES.get(key, default_value)
+
+def save_runtime_preference(key, value):
+  """
+  saves runtime preferences to runtime_cache
+  """
+
+  runtime_preference_path = data_directory('runtime_cache')
+
+  RUNTIME_PREFERENCES.set(key, value)
+  RUNTIME_PREFERENCES.save(runtime_preference_path)
 
 
 @uses_settings

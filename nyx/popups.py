@@ -130,7 +130,8 @@ def show_welcome():
    def _render(subwindow):
       subwindow.box()
       subwindow.addstr(2, 1, 'Welcome to nyx')
-      subwindow.addstr(2, 2, 'Press any key to close dialog...')
+      subwindow.addstr(2, 2, 'To see this message everytime nyx starts add "show_welcome true" in your config file')
+      subwindow.addstr(2, 3, 'Press any key to close dialog...')
 
    with nyx.curses.CURSES_LOCK:
       nyx.curses.draw(_render, top = _top())
