@@ -180,7 +180,7 @@ def main():
     try:
       open(runtime_preference_path, 'a+').close()
       save_runtime_preference('show_welcome', 'true')
-    except OSError as exc:
+    except OSError:
       stem.util.log.Error('Unable to create runtime_cache')
 
   try:
@@ -200,6 +200,7 @@ def main():
 
     sys.exit(1)
 
+
 def draw_loop():
   interface = nyx_interface()
   next_key = None  # use this as the next user input
@@ -218,7 +219,10 @@ def draw_loop():
   if runtime_preference('show_welcome', False):
     nyx.popups.show_welcome() 
     interface.redraw()
-    save_runtime_preference('show_welcome', 'false')
+    try:
+      save_runtime_preference('show_welcome', 'false')
+    except IOError:
+      stem.util.log.Error('Could no save to runtime_cache')
 
   while not interface._quit:
     if next_key:
@@ -352,15 +356,14 @@ def runtime_preference(key, default_value, config):
   RUNTIME_PREFERENCES.load(runtime_preference_path)
   
   if key in config.keys():
-    #stem.util.log.notice("Config File Value: %s" %(config.get(key, default_value)))
     return config.get(key, default_value)
   else:
-    #stem.util.log.notice("Runtime Cache Value: %s" %(RUNTIME_PREFERENCES.get(key, default_value)))
     return RUNTIME_PREFERENCES.get(key, default_value)
+
 
 def save_runtime_preference(key, value):
   """
-  saves runtime preferences to runtime_cache
+  Saves runtime preferences to runtime_cache
   """
 
   runtime_preference_path = data_directory('runtime_cache')
