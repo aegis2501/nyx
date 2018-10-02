@@ -45,6 +45,14 @@ About:-------------------------------------------------------------------------+
 +------------------------------------------------------------------------------+
 """ % VERSION_LINE).strip()
 
+EXPECTED_ABOUT_WELCOME = """
+Welcome:-------------------------------------------------------------------------+
+| To see this message everytime nyx starts add "show_welcome true" in your config|
+| Press any key...                                                               |
++--------------------------------------------------------------------------------+
+
+""".strip()
+
 EXPECTED_EMPTY_COUNTS = """
 Client Locales---------------------------------------+
 | Usage stats aren't available yet, press any key... |
@@ -293,6 +301,12 @@ class TestPopups(unittest.TestCase):
   def test_about(self):
     rendered = test.render(nyx.popups.show_about)
     self.assertEqual(EXPECTED_ABOUT_POPUP, rendered.content)
+
+  @require_curses
+  @patch('nyx.popups._top', Mock(return_value = 0))
+  def test_welcome(self):
+    rendered = test.render(nyx.popups.show_welcome)
+    self.assertEqual(EXPECTED_ABOUT_WELCOME, rendered.content)
 
   @require_curses
   @patch('nyx.popups._top', Mock(return_value = 0))
