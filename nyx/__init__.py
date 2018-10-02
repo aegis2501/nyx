@@ -217,7 +217,7 @@ def draw_loop():
   stem.util.log.info('nyx started (initialization took %0.1f seconds)' % (time.time() - CONFIG['start_time']))
 
   if runtime_preference('show_welcome', False):
-    nyx.popups.show_welcome() 
+    nyx.popups.show_welcome()
     interface.redraw()
     try:
       save_runtime_preference('show_welcome', 'false')
@@ -354,7 +354,7 @@ def runtime_preference(key, default_value, config):
 
   runtime_preference_path = data_directory('runtime_cache')
   RUNTIME_PREFERENCES.load(runtime_preference_path)
-  
+
   if key in config.keys():
     return config.get(key, default_value)
   else:
