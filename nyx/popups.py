@@ -126,12 +126,12 @@ def show_welcome():
    Shows welcome dialog when nyx is run for the first time.
    Can be turned off by setting shown in .nyxrc to true.
    """
-   
+
    def _render(subwindow):
       subwindow.box()
-      subwindow.addstr(2, 1, 'Welcome to nyx')
+      subwindow.addstr(0, 0, 'Welcome:', HIGHLIGHT)
       subwindow.addstr(2, 2, 'To see this message everytime nyx starts add "show_welcome true" in your config file')
-      subwindow.addstr(2, 3, 'Press any key to close dialog...')
+      subwindow.addstr(2, 3, 'Press any key...')
 
    with nyx.curses.CURSES_LOCK:
       nyx.curses.draw(_render, top = _top())
@@ -268,6 +268,7 @@ def show_descriptor(fingerprint, color, is_close_key):
           nyx.curses.draw(_render, top = _top(), width = width, height = height)
       elif is_close_key(key):
         return key
+
 
 def _descriptor_text(fingerprint):
   """
