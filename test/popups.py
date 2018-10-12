@@ -46,10 +46,12 @@ About:-------------------------------------------------------------------------+
 """ % VERSION_LINE).strip()
 
 EXPECTED_ABOUT_WELCOME = """
-Welcome:-------------------------------------------------------------------------+
-| To see this message everytime nyx starts add "show_welcome true" in your config|
-| Press any key...                                                               |
-+--------------------------------------------------------------------------------+
+Welcome:------------------------------------------------------------------------------------------------+
+| To see this message everytime nyx starts add "show_welcome true" in your config file.                 |
+| Use the arrow keys to change between different pages or press m to navigate through options in a menu.|
+| Press h if you forget your hotkeys.                                                                   |
+| Press any key...                                                                                      |
++-------------------------------------------------------------------------------------------------------+
 
 """.strip()
 

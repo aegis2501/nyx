@@ -130,11 +130,13 @@ def show_welcome():
    def _render(subwindow):
       subwindow.box()
       subwindow.addstr(0, 0, 'Welcome:', HIGHLIGHT)
-      subwindow.addstr(2, 2, 'To see this message everytime nyx starts add "show_welcome true" in your config file')
-      subwindow.addstr(2, 3, 'Press any key...')
+      subwindow.addstr(2, 2, 'To see this message everytime nyx starts add "show_welcome true" in your config file.')
+      subwindow.addstr(2, 3, 'Use the arrow keys to change between different pages or press m to navigate through options in a menu.')
+      subwindow.addstr(2, 4, 'Press h if you forget your hotkeys.')
+      subwindow.addstr(2, 5, 'Press any key...')
 
    with nyx.curses.CURSES_LOCK:
-      nyx.curses.draw(_render, top = _top())
+      nyx.curses.draw(_render, top = _top(), width = 110, height = 7)
       nyx.curses.key_input()
 
 
